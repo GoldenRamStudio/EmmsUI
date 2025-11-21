@@ -37,6 +37,7 @@ FEmmsAttributeSpecification* UEmmsWidgetHelpers::Attr_UTextBlock_Font;
 FEmmsAttributeSpecification* UEmmsWidgetHelpers::Attr_UTextBlock_ColorAndOpacity;
 FEmmsAttributeSpecification* UEmmsWidgetHelpers::Attr_UTextBlock_AutoWrapText;
 FMulticastDelegateProperty* UEmmsWidgetHelpers::Event_UButton_OnClicked;
+FEmmsAttributeSpecification* UEmmsWidgetHelpers::Attr_UButton_WidgetStyle;
 FEmmsAttributeSpecification* UEmmsWidgetHelpers::Attr_USpacer_Size;
 FEmmsAttributeSpecification* UEmmsWidgetHelpers::Attr_USizeBox_WidthOverride;
 FEmmsAttributeSpecification* UEmmsWidgetHelpers::Attr_USizeBox_HeightOverride;
@@ -205,6 +206,20 @@ bool UEmmsWidgetHelpers::Button_ImplBoolConv(FEmmsWidgetHandle* Widget)
 	);
 
 	return EventListener->ConsumeTriggered();
+}
+
+void UEmmsWidgetHelpers::SetButtonStyleColor(FEmmsWidgetHandle* Widget, const FLinearColor& StyleColor)
+{
+	if (Widget->Element == nullptr)
+		return;
+
+	if (FButtonStyle* Value = GetPartialPendingAttribute<FButtonStyle>(*Widget, Attr_UButton_WidgetStyle))
+	{
+		*Value = UEmmsDefaultWidgetStyles::GetDefaultButtonStyle();
+		Value->Normal.TintColor = StyleColor;
+		Value->Hovered.TintColor = StyleColor;
+		Value->Pressed.TintColor = StyleColor;
+	}
 }
 
 void UEmmsWidgetHelpers::SetButtonInnerPadding(FEmmsWidgetHandle* Widget, float Horizontal, float Vertical)
@@ -1258,8 +1273,10 @@ AS_FORCE_LINK const FAngelscriptBinds::FBind Bind_EmmsWidgetHelpers((int32)FAnge
 
 	{
 		auto mmUButton_ = FAngelscriptBinds::ExistingClass("mm<UButton>");
+		UEmmsWidgetHelpers::Attr_UButton_WidgetStyle = GetWidgetAttrSpec("WidgetStyle", UButton::StaticClass());
 		UEmmsWidgetHelpers::Event_UButton_OnClicked = GetWidgetEvent("OnClicked", UButton::StaticClass());
 		mmUButton_.Method("bool opImplConv() const", &UEmmsWidgetHelpers::Button_ImplBoolConv);
+		mmUButton_.Method("void SetButtonStyleColor(const FLinearColor& StyleColor) const", &UEmmsWidgetHelpers::SetButtonStyleColor);
 		mmUButton_.Method("void SetInnerPadding(float32 Horizontal, float32 Vertical) const", &UEmmsWidgetHelpers::SetButtonInnerPadding);
 		SCRIPT_BIND_DOCUMENTATION("Set the padding of the label widget inside the button");
 	}

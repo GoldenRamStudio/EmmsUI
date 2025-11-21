@@ -33,6 +33,11 @@ FSlateFontInfo& UEmmsDefaultWidgetStyles::GetDefaultFont()
 	return *DefaultStyle_Font;
 }
 
+const FButtonStyle& UEmmsDefaultWidgetStyles::GetDefaultButtonStyle()
+{
+	return *DefaultStyle_Button;
+}
+
 void UEmmsDefaultWidgetStyles::ApplyDefaultStyleToNewWidget(UWidget* Widget)
 {
 	if (UButton* Button = Cast<UButton>(Widget))

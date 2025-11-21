@@ -21,6 +21,7 @@ public:
 	static FEmmsAttributeSpecification* Attr_UTextBlock_ColorAndOpacity;
 	static FEmmsAttributeSpecification* Attr_UTextBlock_AutoWrapText;
 	static FMulticastDelegateProperty* Event_UButton_OnClicked;
+	static FEmmsAttributeSpecification* Attr_UButton_WidgetStyle;
 	static FEmmsAttributeSpecification* Attr_USpacer_Size;
 	static FEmmsAttributeSpecification* Attr_USizeBox_WidthOverride;
 	static FEmmsAttributeSpecification* Attr_USizeBox_HeightOverride;
@@ -67,6 +68,7 @@ public:
 	static FEmmsWidgetHandle Button(const FString& LabelText);
 	static FEmmsWidgetHandle Button_IconBrush(const FString& LabelText, const FSlateBrush& IconBrush, const FVector2D& IconSize, const FLinearColor& IconColor);
 	static FEmmsWidgetHandle Button_IconStyleBrush(const FString& LabelText, const FName& IconStyleBrush, const FVector2D& IconSize, const FLinearColor& IconColor);
+	static void SetButtonStyleColor(FEmmsWidgetHandle* Handle, const FLinearColor& StyleColor);
 	static bool Button_ImplBoolConv(FEmmsWidgetHandle* Widget);
 	static void SetButtonInnerPadding(FEmmsWidgetHandle* Widget, float Horizontal, float Vertical);
 
