@@ -71,9 +71,9 @@ public:
 	static void SetButtonInnerPadding(FEmmsWidgetHandle* Widget, float Horizontal, float Vertical);
 
 	static FEmmsWidgetHandle Text(const FString& Text, float FontSize = 0, const FLinearColor& Color = FLinearColor::White, bool bWrap = false, bool bBold = false);
-	static void SetTextFontSize(FEmmsWidgetHandle Widget, float FontSize);
-	static void SetTextFontFace(FEmmsWidgetHandle Widget, FName FontFace);
-	static void SetTextBold(FEmmsWidgetHandle Widget, bool bBold);
+	static void SetTextFontSize(FEmmsWidgetHandle* Widget, float FontSize);
+	static void SetTextFontFace(FEmmsWidgetHandle* Widget, FName FontFace);
+	static void SetTextBold(FEmmsWidgetHandle* Widget, bool bBold);
 
 	static FEmmsWidgetHandle Spacer_Uniform(float Size);
 	static FEmmsWidgetHandle Spacer(float Width, float Height);

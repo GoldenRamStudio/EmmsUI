@@ -162,9 +162,9 @@ FEmmsWidgetHandle UEmmsWidgetHelpers::Text(const FString& Text, float FontSize, 
 	return TextBlock;
 }
 
-void UEmmsWidgetHelpers::SetTextFontSize(FEmmsWidgetHandle Widget, float FontSize)
+void UEmmsWidgetHelpers::SetTextFontSize(FEmmsWidgetHandle* Widget, float FontSize)
 {
-	if (FSlateFontInfo* FontValue = GetPartialPendingAttribute<FSlateFontInfo>(Widget, Attr_UTextBlock_Font))
+	if (FSlateFontInfo* FontValue = GetPartialPendingAttribute<FSlateFontInfo>(*Widget, Attr_UTextBlock_Font))
 	{
 		if (!FontValue->HasValidFont())
 			*FontValue = UEmmsDefaultWidgetStyles::GetDefaultFont();
@@ -172,9 +172,9 @@ void UEmmsWidgetHelpers::SetTextFontSize(FEmmsWidgetHandle Widget, float FontSiz
 	}
 }
 
-void UEmmsWidgetHelpers::SetTextFontFace(FEmmsWidgetHandle Widget, FName FontFace)
+void UEmmsWidgetHelpers::SetTextFontFace(FEmmsWidgetHandle* Widget, FName FontFace)
 {
-	if (FSlateFontInfo* FontValue = GetPartialPendingAttribute<FSlateFontInfo>(Widget, Attr_UTextBlock_Font))
+	if (FSlateFontInfo* FontValue = GetPartialPendingAttribute<FSlateFontInfo>(*Widget, Attr_UTextBlock_Font))
 	{
 		if (!FontValue->HasValidFont())
 			*FontValue = UEmmsDefaultWidgetStyles::GetDefaultFont();
@@ -182,9 +182,9 @@ void UEmmsWidgetHelpers::SetTextFontFace(FEmmsWidgetHandle Widget, FName FontFac
 	}
 }
 
-void UEmmsWidgetHelpers::SetTextBold(FEmmsWidgetHandle Widget, bool bBold)
+void UEmmsWidgetHelpers::SetTextBold(FEmmsWidgetHandle* Widget, bool bBold)
 {
-	if (FSlateFontInfo* FontValue = GetPartialPendingAttribute<FSlateFontInfo>(Widget, Attr_UTextBlock_Font))
+	if (FSlateFontInfo* FontValue = GetPartialPendingAttribute<FSlateFontInfo>(*Widget, Attr_UTextBlock_Font))
 	{
 		if (!FontValue->HasValidFont())
 			*FontValue = UEmmsDefaultWidgetStyles::GetDefaultFont();
