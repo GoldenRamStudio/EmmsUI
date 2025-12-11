@@ -57,6 +57,8 @@ FEmmsAttributeSpecification* UEmmsWidgetHelpers::Attr_UListView_EntryWidgetClass
 FEmmsAttributeSpecification* UEmmsWidgetHelpers::Attr_USpinBox_Value;
 FEmmsAttributeSpecification* UEmmsWidgetHelpers::Attr_USpinBox_MinValue;
 FEmmsAttributeSpecification* UEmmsWidgetHelpers::Attr_USpinBox_MaxValue;
+FEmmsAttributeSpecification* UEmmsWidgetHelpers::Attr_USpinBox_MinSliderValue;
+FEmmsAttributeSpecification* UEmmsWidgetHelpers::Attr_USpinBox_MaxSliderValue;
 FEmmsAttributeSpecification* UEmmsWidgetHelpers::Attr_USpinBox_Delta;
 FEmmsAttributeSpecification* UEmmsWidgetHelpers::Attr_USlider_Value;
 FEmmsAttributeSpecification* UEmmsWidgetHelpers::Attr_USlider_MinValue;
@@ -415,19 +417,34 @@ FEmmsWidgetHandle UEmmsWidgetHelpers::SpinBox(double& OutValue)
 		AttributeState.SetPendingValue(Attr_USpinBox_Value, &NewValue);
 	}
 
+	// Sort the value attribute last in the list, so it doesn't get clamped by old Min/Max values
+	Widget.Element->Attributes.KeySort([](const FEmmsAttributeSpecification& A, const FEmmsAttributeSpecification& B) -> bool
+	{
+		if (&A == Attr_USpinBox_Value)
+			return false;
+		else if (&B == Attr_USpinBox_Value)
+			return true;
+		else
+			return &A < &B;
+	});
+
 	return Widget;
 }
 
 FEmmsWidgetHandle UEmmsWidgetHelpers::SpinBox_Constrained(double& OutValue, float MinValue, float MaxValue, float Delta)
 {
-	FEmmsWidgetHandle Widget = SpinBox(OutValue);
+	FEmmsWidgetHandle Widget = UEmmsStatics::AddWidget(USpinBox::StaticClass());
 	if (Widget.Element == nullptr)
 		return Widget;
 
 	if (float* Value = GetPartialPendingAttribute<float>(Widget, Attr_USpinBox_MinValue))
 		*Value = MinValue;
-
+	if (float* Value = GetPartialPendingAttribute<float>(Widget, Attr_USpinBox_MinSliderValue))
+		*Value = MinValue;
+	
 	if (float* Value = GetPartialPendingAttribute<float>(Widget, Attr_USpinBox_MaxValue))
+		*Value = MaxValue;
+	if (float* Value = GetPartialPendingAttribute<float>(Widget, Attr_USpinBox_MaxSliderValue))
 		*Value = MaxValue;
 
 	if (Delta != 0)
@@ -435,6 +452,25 @@ FEmmsWidgetHandle UEmmsWidgetHelpers::SpinBox_Constrained(double& OutValue, floa
 		if (float* Value = GetPartialPendingAttribute<float>(Widget, Attr_USpinBox_Delta))
 			*Value = Delta;
 	}
+
+	{
+		float NewValue = (float)OutValue;
+		auto& AttributeState = Widget.Element->Attributes.FindOrAdd(Attr_USpinBox_Value);
+		if (!AttributeState.CurrentValue.IsEmpty() && *(float*)AttributeState.CurrentValue.GetDataPtr() == NewValue)
+			OutValue = (double)CastChecked<USpinBox>(Widget.Element->UMGWidget)->GetValue();
+		AttributeState.SetPendingValue(Attr_USpinBox_Value, &NewValue);
+	}
+
+	// Sort the value attribute last in the list, so it doesn't get clamped by old Min/Max values
+	Widget.Element->Attributes.KeySort([](const FEmmsAttributeSpecification& A, const FEmmsAttributeSpecification& B) -> bool
+	{
+		if (&A == Attr_USpinBox_Value)
+			return false;
+		else if (&B == Attr_USpinBox_Value)
+			return true;
+		else
+			return &A < &B;
+	});
 
 	return Widget;
 }
@@ -1184,6 +1220,10 @@ AS_FORCE_LINK const FAngelscriptBinds::FBind Bind_EmmsWidgetHelpers((int32)FAnge
 		UEmmsWidgetHelpers::Attr_USpinBox_MinValue->ResetToDefaultFunction = [](FEmmsAttributeSpecification*, void* Container) { ((USpinBox*)Container)->ClearMinValue(); };
 		UEmmsWidgetHelpers::Attr_USpinBox_MaxValue = GetWidgetAttrSpec("MaxValue", USpinBox::StaticClass());
 		UEmmsWidgetHelpers::Attr_USpinBox_MaxValue->ResetToDefaultFunction = [](FEmmsAttributeSpecification*, void* Container) { ((USpinBox*)Container)->ClearMaxValue(); };
+		UEmmsWidgetHelpers::Attr_USpinBox_MinSliderValue = GetWidgetAttrSpec("MinSliderValue", USpinBox::StaticClass());
+		UEmmsWidgetHelpers::Attr_USpinBox_MinSliderValue->ResetToDefaultFunction = [](FEmmsAttributeSpecification*, void* Container) { ((USpinBox*)Container)->ClearMinSliderValue(); };
+		UEmmsWidgetHelpers::Attr_USpinBox_MaxSliderValue = GetWidgetAttrSpec("MaxSliderValue", USpinBox::StaticClass());
+		UEmmsWidgetHelpers::Attr_USpinBox_MaxSliderValue->ResetToDefaultFunction = [](FEmmsAttributeSpecification*, void* Container) { ((USpinBox*)Container)->ClearMaxSliderValue(); };
 		UEmmsWidgetHelpers::Attr_USpinBox_Delta = GetWidgetAttrSpec("Delta", USpinBox::StaticClass());
 		FAngelscriptBinds::BindGlobalFunction("mm<USpinBox> SpinBox(float64&out OutValue)", &UEmmsWidgetHelpers::SpinBox);
 		SCRIPT_BIND_DOCUMENTATION("Add an editable spinbox widget. The out float value will be set to whatever the user has entered");

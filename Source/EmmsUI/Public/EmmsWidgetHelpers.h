@@ -41,6 +41,8 @@ public:
 	static FEmmsAttributeSpecification* Attr_USpinBox_Value;
 	static FEmmsAttributeSpecification* Attr_USpinBox_MinValue;
 	static FEmmsAttributeSpecification* Attr_USpinBox_MaxValue;
+	static FEmmsAttributeSpecification* Attr_USpinBox_MinSliderValue;
+	static FEmmsAttributeSpecification* Attr_USpinBox_MaxSliderValue;
 	static FEmmsAttributeSpecification* Attr_USpinBox_Delta;
 	static FEmmsAttributeSpecification* Attr_USlider_Value;
 	static FEmmsAttributeSpecification* Attr_USlider_MinValue;
