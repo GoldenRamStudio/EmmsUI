@@ -332,6 +332,7 @@ AS_FORCE_LINK const FAngelscriptBinds::FBind Bind_EmmsWidgets((int32)FAngelscrip
 						&UEmmsStatics::SetSlotAttributeValue,
 						Spec
 					);
+					FAngelscriptBinds::PreviousBindPassScriptFunctionAsFirstParam();
 
 #if WITH_EDITOR
 					if (Tooltip.Len() != 0)
